@@ -1,4 +1,5 @@
 from docx import Document
+import subprocess
 
 list = [
     "デイリーポータルＺライター賞",
@@ -13,6 +14,8 @@ print(doc.paragraphs[2].text)
 print(doc.paragraphs[2].runs[0].text)
 doc.paragraphs[0].runs[0].text = "置換したテキストだよ"
 doc.save("sample.docx")
+subprocess.run("docx2pdf /Users/stamefus/prize_by_ai/sample.docx", shell=True)
+
 # doc.add_paragraph(textwrap.dedent('''デイリーポータルＺライター賞
 
 # 爲房新太朗様

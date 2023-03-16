@@ -130,3 +130,6 @@ dmypy.json
 
 # Apps
 .apikey
+sample.docx
+sample.pdf
+.DS_STORE
