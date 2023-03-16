@@ -1,5 +1,4 @@
 from docx import Document
-import textwrap
 
 list = [
     "デイリーポータルＺライター賞",
