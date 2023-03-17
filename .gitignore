@@ -133,3 +133,4 @@ dmypy.json
 sample.docx
 sample.pdf
 .DS_STORE
+pdf/
