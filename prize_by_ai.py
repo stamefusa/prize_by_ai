@@ -6,19 +6,26 @@ import os
 import re
 
 def main():
-    prompt = "爲房新太朗は、おいしいケーキを作ることに長けており、家族をそのケーキで幸せにしています。そのことに対して架空の賞を設定し、さらに賞状を贈呈するとして、賞の名前・その賞状に記載する文章・授与する組織名を考えて、その順番にタブ区切りで回答してください。賞状に記載する文章は勝手に考えてよく、300文字程度としてください。"
+    name, text = getInputTexts()
+    print(name + "\n" + text)
+    prompt = name + "は、" + text + "。そのことに対して架空の賞を設定し、さらに賞状を贈呈するとして、賞の名前・その賞状に記載する文章・授与する組織名を考えて、その順番にタブ区切りで回答してください。賞状に記載する文章は勝手に考えてよく、300文字程度としてください。"
     prize = getPrizeTexts(prompt)
     print(prize)
 
     if len(prize) == 3:
         print("成功")
         now = datetime.datetime.now()
-        disp_now = str(now.year) + "年" + str(now.month) + "月" + str(now.day) + "日"
+        disp_now = "令和" + str(now.year-2018) + "年" + str(now.month) + "月" + str(now.day) + "日"
         title, body, org = sanitise(prize)
-        makeDocx(title, "爲房 新太朗", body, disp_now, org)
-        #printPrize()
+        makeDocx(title, name, body, disp_now, org)
+        printPrize()
     else:
         print("失敗")
+
+def getInputTexts():
+    file = open("input.txt")
+    name, text = file.read().splitlines()
+    return name, text.rstrip("。")
 
 def getPrizeTexts(input):
     file = open(".apikey")
@@ -47,18 +54,18 @@ def sanitise(src):
 def makeDocx(title, to_name, body, date, from_name):
     # TODO 賞の文章の長さによって受賞者名の位置を調整
     doc = Document("template.docx")
-    doc.paragraphs[0].runs[0].text = title.replace('\n', '')
-    doc.paragraphs[2].runs[0].text = to_name.replace('\n', '')
-    doc.paragraphs[4].runs[0].text = body.replace('\n', '').replace('。', '。\n')
-    doc.paragraphs[6].runs[0].text = date.replace('\n', '')
-    doc.paragraphs[7].runs[0].text = from_name.replace('\n', '')
+    doc.paragraphs[0].runs[0].text = title
+    doc.paragraphs[2].runs[0].text = to_name
+    doc.paragraphs[4].runs[0].text = body
+    doc.paragraphs[6].runs[0].text = date
+    doc.paragraphs[7].runs[0].text = from_name
     doc.save("sample.docx")
 
 def printPrize():
     path = os.getcwd() + "/sample.docx"
     subprocess.run("docx2pdf " + path, shell=True)
     print_path = os.getcwd() + "/sample.pdf"
-    subprocess.run("lpr -P EPSON_EP_707A_Series " + print_path, shell=True)
+    #subprocess.run("lpr -P EPSON_EP_707A_Series " + print_path, shell=True)
 
 if __name__ == "__main__":
     main()
