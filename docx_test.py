@@ -1,11 +1,12 @@
 from docx import Document
 import subprocess
+import os
 
 list = [
     "デイリーポータルＺライター賞",
     "爲房新太朗様",
     "あなたの深く考えられた記事と、緻密で愛情ある文章に感銘を受け、デイリーポータルＺライター賞を授与いたします。\nあなたの寄稿は常に読者の注目を集め、彼らに新たな視点を提供しています。\n更なるご成功を心よりお祈りしております。",
-    "授与日：2021年7月10日",
+    "授与日：2023年7月10日",
     "授与組織：日本メディア協会"
 ]
 
@@ -27,7 +28,8 @@ doc.paragraphs[6].runs[0].text = "\n" * lf_count + list[3]
 #if len(list[2]) > 100 and len(list[2]) < 200:
 
 doc.save("sample.docx")
-subprocess.run("docx2pdf /Users/stamefus/prize_by_ai/sample.docx", shell=True)
+filepath = os.environ['HOME'] + "/prize_by_ai/sample.docx"
+subprocess.run("docx2pdf " + filepath, shell=True)
 
 # doc.add_paragraph(textwrap.dedent('''デイリーポータルＺライター賞
 
