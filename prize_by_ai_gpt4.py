@@ -12,7 +12,6 @@ def main():
     count = 0
     while True:
         prize = getPrizeTexts(prompt)
-        #prize = '{"title": "カオス文学大賞","body": "戴冠者の芸術性、独創性、そして何よりその生存を讃え、本カオス文学大賞は贈られます。愛すべき一風変わった生き様に敬意を表し、未来永劫、その名を記憶することを誓います。贈賞者であるー我々は、その英知と勇敢さのひとしずくが、美しいカオスへと生まれ変わることを祈念いたします。","org": "カオス文化芸術推進協会"}'
         print(prize)
 
         if input("これで印刷しますか？[y/n]") != "y":
@@ -36,8 +35,21 @@ def getPrizeTexts(input):
     openai.api_key = file.readline()
     file.close()
     
-    completion = openai.ChatCompletion.create(model="gpt-4", messages=[{"role": "user", "content": input}])
-    tmp = completion.choices[0].message.content
+    schema = {
+        "type": "object",
+        "properties": {
+            "title": { "type": "string"},
+            "body": { "type": "string"},
+            "org": { "type": "string"}
+        }
+    }
+    completion = openai.ChatCompletion.create(
+        model="gpt-4",
+        messages=[{"role": "user", "content": input}],
+        functions=[{"name": "create_prize_text", "parameters": schema}],
+        function_call={"name": "create_prize_text"}
+    )
+    tmp = completion.choices[0].message.function_call.arguments
     return tmp.strip()
 
 def sanitise(src):
